@@ -3,9 +3,10 @@ import React, { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
-  const [errorMsg, setErrorMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState<string|null>(null);
   const router = useRouter();
 const searchParams =useSearchParams() ;
   interface Inputs {
@@ -31,12 +32,15 @@ try {
     });
     if (response?.ok) {
       window.location.assign(response?.url ?? callBackUrl) ;
-    
+      toast.success("logged in successfully") ;
+      setErrorMsg(null) ;
+    return
       // router.push("/");
     } 
   
 } catch (error) {
   console.log(error);
+  setErrorMsg("userName or Pass Incorrect")
   
 }
   }
