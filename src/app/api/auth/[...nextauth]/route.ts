@@ -48,7 +48,7 @@ callbacks: {
       return { ...token, ...user };
     }
   } ,
-secret: process.env.NEXTAUTH_SECRET 
+secret:process.env.AUTH_SECRET
 
 
 };
