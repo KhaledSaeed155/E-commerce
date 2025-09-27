@@ -1,13 +1,13 @@
 "use client";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const router = useRouter();
-
+const searchParams =useSearchParams() ;
   interface Inputs {
     email: string;
     password: string;
@@ -20,16 +20,25 @@ export default function LoginPage() {
   } = useForm<Inputs>();
 
   async function onSubmit(values: Inputs) {
-    const response = await signIn("credentials", {
+try {
+  const callBackUrl=searchParams.get("callbackUrl") ?? "/";
+  
+      const response = await signIn("credentials", {
       redirect: false,
       email: values.email,
       password: values.password,
+      callBackUrl
     });
     if (response?.ok) {
-      router.push("/");
-    } else if (response?.error) {
-      setErrorMsg(response.error);
-    }
+      window.location.assign(response?.url ?? callBackUrl) ;
+    
+      // router.push("/");
+    } 
+  
+} catch (error) {
+  console.log(error);
+  
+}
   }
 
   return (
