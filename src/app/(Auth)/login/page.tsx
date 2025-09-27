@@ -28,7 +28,7 @@ try {
       redirect: false,
       email: values.email,
       password: values.password,
-      callBackUrl
+      callbackUrl:callBackUrl
     });
     if (response?.ok) {
       window.location.assign(response?.url ?? callBackUrl) ;
