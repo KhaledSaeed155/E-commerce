@@ -6,9 +6,10 @@ import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";
 
 export default function LoginPage() {
-  const [errorMsg, setErrorMsg] = useState<string|null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const router = useRouter();
-const searchParams =useSearchParams() ;
+  const searchParams = useSearchParams();
+
   interface Inputs {
     email: string;
     password: string;
@@ -21,28 +22,30 @@ const searchParams =useSearchParams() ;
   } = useForm<Inputs>();
 
   async function onSubmit(values: Inputs) {
-try {
-  const callBackUrl=searchParams.get("callbackUrl") ?? "/";
-  
+    try {
+      // ✅ اجعل القيمة دايمًا string مش null
+      const callbackUrl = searchParams.get("callbackUrl") ?? "/";
+
       const response = await signIn("credentials", {
-      redirect: false,
-      email: values.email,
-      password: values.password,
-      callbackUrl:callBackUrl
-    });
-    if (response?.ok) {
-      window.location.assign(response?.url ?? callBackUrl) ;
-      toast.success("logged in successfully") ;
-      setErrorMsg(null) ;
-    return
-      // router.push("/");
-    } 
-  
-} catch (error) {
-  console.log(error);
-  setErrorMsg("userName or Pass Incorrect")
-  
-}
+        redirect: false,
+        email: values.email,
+        password: values.password,
+        callbackUrl, // ✅ الاسم الصحيح
+      });
+
+      if (response?.ok) {
+        window.location.assign(response.url ?? callbackUrl);
+        toast.success("Logged in successfully");
+        setErrorMsg(null);
+        return;
+      }
+
+      // لو login fail
+      setErrorMsg("Username or password incorrect");
+    } catch (error) {
+      console.error(error);
+      setErrorMsg("Something went wrong, try again later.");
+    }
   }
 
   return (
@@ -65,7 +68,9 @@ try {
             className="px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm transition-all hover:shadow-md bg-white/90"
             {...register("email", { required: "Email is required" })}
           />
-          {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+          {errors.email && (
+            <p className="text-red-500 text-sm">{errors.email.message}</p>
+          )}
 
           <input
             type="password"
@@ -73,7 +78,9 @@ try {
             className="px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm transition-all hover:shadow-md bg-white/90"
             {...register("password", { required: "Password is required" })}
           />
-          {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+          {errors.password && (
+            <p className="text-red-500 text-sm">{errors.password.message}</p>
+          )}
 
           <button
             type="submit"
@@ -83,7 +90,7 @@ try {
           </button>
         </form>
 
-        <p className="text-center text-gray-600 mt-6 text-sm ">
+        <p className="text-center text-gray-600 mt-6 text-sm">
           Don’t have an account?{" "}
           <a
             href="/register"
@@ -91,11 +98,11 @@ try {
           >
             Register
           </a>
-               <a
+          <a
             href="/forgotpassword"
             className="text-indigo-600 hover:text-indigo-800 font-medium underline ms-2"
           >
-           forgot password
+            Forgot password
           </a>
         </p>
       </div>
