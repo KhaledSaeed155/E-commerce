@@ -2,18 +2,20 @@ import { cookies } from "next/headers";
 import { decode } from "next-auth/jwt";
 
 export async function GetToken() {
-  const encodedToken = (await cookies()).get("next-auth.session-token")?.value;
+const cookieStore = await cookies();
+        const sessionToken = cookieStore.get("next-auth.session-token")?.value;
+        const secureSessionToken = cookieStore.get("__Secure-next-auth.session-token")?.value;  //vercel
+        const encodedToken = sessionToken || secureSessionToken;
 
-  try {
-    const decodedToken = await decode({
-      token: encodedToken,
-      secret: process.env.NEXTAUTH_SECRET!,
-    });
-    const token = decodedToken?.token;
-    console.log(token, "decodedToken");
-    return token;
-  } catch (error) {
-    console.error("Failed to decode token:", error);
-    return null;
-  }
+        if (!encodedToken) {
+            return null;
+        }
+
+        const decToken = await decode({ token: encodedToken, secret: process.env.AUTH_SECRET! });
+        console.log(decToken, "tokeeeeeeeeeeeeeeeeeeeeeeeeeeen");
+        
+        const token = decToken?.token;
+
+
+    return token
 }
