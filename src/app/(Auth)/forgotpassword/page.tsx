@@ -37,7 +37,7 @@ try {
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-200 to-indigo-200 p-4">
       <div className="w-full max-w-md bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-10 border border-white/30">
         <h2 className="text-4xl font-extrabold text-center text-indigo-700 mb-8">
-        forgot password
+        Forgot password
         </h2>
 
         {errorMsg && (
